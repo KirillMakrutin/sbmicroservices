@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
+    public UserRest createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
         return UserRest.builder()
                 .id(UUID.randomUUID().toString())
                 .firstName(userDetails.getFirstName())
