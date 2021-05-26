@@ -1,65 +1,81 @@
 package com.kmakrutin.mobile.app.ws.controller;
 
+import com.kmakrutin.mobile.app.ws.model.request.UpdateUserDetailsRequestModel;
 import com.kmakrutin.mobile.app.ws.model.request.UserDetailsRequestModel;
 import com.kmakrutin.mobile.app.ws.model.response.UserRest;
-import org.springframework.http.HttpStatus;
+import com.kmakrutin.mobile.app.ws.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "users",
         consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
         produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class UserController {
 
+    @Autowired
+    private final UserService userService;
+
     @GetMapping
     public Collection<UserRest> getUsers(@RequestParam(required = false) Integer page, @RequestParam(defaultValue = "100") int limit) {
-        return List.of(userRest(), userRest(), userRest());
+        return userService.findAll();
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userRest());
+
+        final UserRest user = userService.findById(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @PostMapping
     public UserRest createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
-        return UserRest.builder()
-                .id(UUID.randomUUID().toString())
+        final UserRest newUser = UserRest.builder()
                 .firstName(userDetails.getFirstName())
                 .lastName(userDetails.getLastName())
                 .email(userDetails.getEmail())
                 .build();
+
+        return userService.save(newUser);
     }
 
-    @PutMapping
-    public UserRest updateUser() {
-        return userRest();
-    }
-
-    @DeleteMapping
-    public UserRest deleteUser() {
-        return userRest();
-    }
-
-    private UserRest userRest() {
-        String id = UUID.randomUUID().toString();
-        String firstName = id.substring(0, 10);
-        String lastName = id.substring(10);
-        String email = id.substring(0, 5) + "@gmail.com";
-
-        return UserRest.builder()
-                .id(id)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserRest> updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails) {
+        final UserRest userForUpdate = UserRest.builder()
+                .firstName(userDetails.getFirstName())
+                .lastName(userDetails.getLastName())
                 .build();
+
+        final UserRest updatedUser = userService.update(userId, userForUpdate);
+
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<UserRest> deleteUser(@PathVariable String userId) {
+        UserRest deletedUser = userService.delete(userId);
+
+        if (deletedUser != null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

@@ -1,0 +1,39 @@
+GET localhost:8080/users
+Content-Type: application/json
+Accept: application/json
+
+###
+POST localhost:8080/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "password": 12345678,
+  "email": "test.user@gmail.com"
+}
+
+> {%
+    client.global.set("userId", response.body.id);
+%}
+
+###
+GET localhost:8080/users/{{userId}}
+Content-Type: application/json
+Accept: application/json
+
+###
+PUT localhost:8080/users/{{userId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "Test2",
+  "lastName": "User2"
+}
+
+###
+DELETE localhost:8080/users/{{userId}}
+Content-Type: application/json
+Accept: application/json
