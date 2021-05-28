@@ -1,5 +1,6 @@
 GET http://localhost:8082/users-ws/users/status/check
 
 ### the same - see gateway route
-#GET http://localhost:8082/users-status-check
+GET http://localhost:8082/users-status-check
+###
 GET http://localhost:8082/uws/users/status/check
