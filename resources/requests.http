@@ -9,6 +9,7 @@ GET http://localhost:8082/uws/users/status/check
 ###
 POST http://localhost:8082/users-ws/users
 Content-Type: application/json
+Accept: application/xml
 
 {
   "firstName": "First",

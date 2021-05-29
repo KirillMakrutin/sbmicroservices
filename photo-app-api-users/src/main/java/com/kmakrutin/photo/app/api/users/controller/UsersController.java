@@ -2,12 +2,16 @@ package com.kmakrutin.photo.app.api.users.controller;
 
 import com.kmakrutin.photo.app.api.users.dto.UserDto;
 import com.kmakrutin.photo.app.api.users.model.CreateUserRequestModel;
+import com.kmakrutin.photo.app.api.users.model.CreateUserResponseModel;
 import com.kmakrutin.photo.app.api.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,13 +30,14 @@ public class UsersController {
         return "Working on port " + environment.getProperty("local.server.port");
     }
 
-    @PostMapping
-    public String createUser(@Valid @RequestBody CreateUserRequestModel userDetails) {
+    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<CreateUserResponseModel> createUser(@Valid @RequestBody CreateUserRequestModel userDetails) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
-        userService.create(userDto);
 
-        return "create user";
+        CreateUserResponseModel responseModel = modelMapper.map(userService.create(userDto), CreateUserResponseModel.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
     }
 }
