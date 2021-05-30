@@ -4,6 +4,7 @@ import com.kmakrutin.photo.app.api.users.controller.AuthenticationFilter;
 import com.kmakrutin.photo.app.api.users.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,13 +23,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
+    private final Environment environment;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public WebSecurity(@Value("${gateway.ip}") String gatewayIp,
                        UserService userService,
+                       Environment environment,
                        BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.gatewayIp = gatewayIp;
         this.userService = userService;
+        this.environment = environment;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -48,7 +53,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     private Filter getAuthenticationFilter() throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, environment);
+        authenticationFilter.setFilterProcessesUrl(environment.getProperty("login.url.path"));
         authenticationFilter.setAuthenticationManager(authenticationManager());
         return authenticationFilter;
     }
