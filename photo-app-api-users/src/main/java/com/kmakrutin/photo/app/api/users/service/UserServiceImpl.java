@@ -6,9 +6,13 @@ import com.kmakrutin.photo.app.api.users.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -35,5 +39,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
 
         return userDetails;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findFirstByEmail(email)
+                .map(userEntity -> new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), true, true, true, true, Collections.emptyList()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found by " + email));
     }
 }
