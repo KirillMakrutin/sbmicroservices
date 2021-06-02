@@ -1,6 +1,8 @@
 package com.kmakrutin.photo.app.api.gateway.filter;
 
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationHeaderFilter.class);
 
     @Autowired
     private Environment environment;
@@ -57,9 +61,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     private boolean isJwtValid(String jwt) {
 
-        final String subject = Jwts.parser().setSigningKey(environment.getProperty("token.secret")).parseClaimsJws(jwt).getBody().getSubject();
+        try {
+            final String subject = Jwts.parser().setSigningKey(environment.getProperty("token.secret")).parseClaimsJws(jwt).getBody().getSubject();
 
-        return subject != null && subject.length() > 0;
+            return subject != null && subject.length() > 0;
+        } catch (Exception e) {
+            LOGGER.error("Failed to validate JWT", e);
+            return false;
+        }
     }
 
     public static class Config {
