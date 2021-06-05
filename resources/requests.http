@@ -29,4 +29,6 @@ Accept: application/xml
 
 ###
 GET http://localhost:8082/users-ws/users/status/check
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5ZjdhNTIyYy1kNTNmLTQ0MDQtODM3OC00N2UxMWE1M2FmNjIiLCJleHAiOjE2MjI2NTkzMzR9.3W1G3sf9Sy8zQsil1KsAESNV9C1uh-3yyOCHKphPB_FmatpN-ouC6E5HcqSZZUx4So9ygBBsHvzfl3FTDkGFvg
+Authorization: Bearer
+
+###
