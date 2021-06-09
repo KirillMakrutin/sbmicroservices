@@ -1,9 +1,12 @@
 ### the same - see gateway route
 GET http://localhost:8082/users-status-check
-Authorization: Bearer test
+Authorization: Bearer
 
 ###
 GET http://localhost:8082/uws/users/status/check
+
+###
+GET http://localhost:8082/users-ws/actuator/health
 
 ###
 POST http://localhost:8082/users-ws/users
@@ -36,5 +39,9 @@ POST http://localhost:8012/actuator/busrefresh
 
 ###
 GET http://localhost:8012/users-ws/git
+
 ###
 GET http://localhost:8012/users-ws/native
+
+###
+GET http://localhost:8012/api-gateway/native
