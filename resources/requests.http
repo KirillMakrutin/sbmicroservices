@@ -35,6 +35,6 @@ Authorization: Bearer
 POST http://localhost:8012/actuator/busrefresh
 
 ###
-GET http://localhost:8012/user-ws/git
+GET http://localhost:8012/users-ws/git
 ###
-GET http://localhost:8012/user-ws/native
+GET http://localhost:8012/users-ws/native
