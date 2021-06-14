@@ -45,3 +45,15 @@ GET http://localhost:8012/users-ws/native
 
 ###
 GET http://localhost:8012/api-gateway/native
+
+###
+POST http://localhost:8012/encrypt
+Content-Type: text/plain
+
+11114ff0-0671-4329-8b72-d120a36b226d
+
+###
+POST http://localhost:8012/decrypt
+Content-Type: text/plain
+
+6af68290f9b59d8ea6451de1b29cd2ae5c075d71774eda03c294c401a63cf114
