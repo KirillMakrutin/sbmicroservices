@@ -2,17 +2,12 @@ package com.kmakrutin.photo.app.api.users.service;
 
 import com.kmakrutin.photo.app.api.users.dto.UserDto;
 import com.kmakrutin.photo.app.api.users.entity.UserEntity;
-import com.kmakrutin.photo.app.api.users.model.AlbumResponseModel;
 import com.kmakrutin.photo.app.api.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -33,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private final AlbumService albumService;
 
     @Autowired
     private final RestTemplate restTemplate;
@@ -67,18 +64,21 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        String albumsUrl = environment.getProperty("albums.url", "");
 
-        final ResponseEntity<List<AlbumResponseModel>> responseEntity = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
-        }, userId);
 
         final UserDto userDto = userRepository.findFirstByUserId(userId)
                 .map(userEntity -> modelMapper.map(userEntity, UserDto.class))
                 .orElseThrow(() -> new RuntimeException("User not found by id " + userId));
 
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            userDto.setAlbums(responseEntity.getBody());
-        }
+        userDto.setAlbums(albumService.getAlbums(userId));
+
+//        String albumsUrl = environment.getProperty("albums.url", "");
+//
+//        final ResponseEntity<List<AlbumResponseModel>> responseEntity = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
+//        }, userId);
+//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+//            userDto.setAlbums(responseEntity.getBody());
+//        }
 
         return userDto;
 
