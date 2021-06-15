@@ -3,6 +3,7 @@ package com.kmakrutin.photo.app.api.users.controller;
 import com.kmakrutin.photo.app.api.users.dto.UserDto;
 import com.kmakrutin.photo.app.api.users.model.CreateUserRequestModel;
 import com.kmakrutin.photo.app.api.users.model.CreateUserResponseModel;
+import com.kmakrutin.photo.app.api.users.model.UserResponseModel;
 import com.kmakrutin.photo.app.api.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -41,5 +42,12 @@ public class UsersController {
         CreateUserResponseModel responseModel = modelMapper.map(userService.create(userDto), CreateUserResponseModel.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseModel> getUser(@PathVariable String userId) {
+        UserDto userDto = userService.getByUserId(userId);
+
+        return ResponseEntity.ok(new ModelMapper().map(userDto, UserResponseModel.class));
     }
 }
