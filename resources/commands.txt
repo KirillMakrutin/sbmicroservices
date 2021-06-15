@@ -13,3 +13,7 @@ create user 'photo_app_user' identified with mysql_native_password BY 'secret';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX, DROP, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES ON photo_app.* TO 'photo_app_user'@'%';
 
 GRANT FILE ON *.* TO 'photo_app_user'@'%';
+
+
+### Asymmetrical encryption
+keytool -genkeypair -alias apiEncryptionKey -keyalg RSA -keypass 123456 -keystore apiEncryptionKey.jks -storepass 123456
