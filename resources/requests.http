@@ -36,7 +36,7 @@ Authorization: Bearer
 
 ###
 GET http://localhost:8082/users-ws/users/088e5a32-1826-42af-a28d-22947df97b99
-Authorization: Bearer
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODhlNWEzMi0xODI2LTQyYWYtYTI4ZC0yMjk0N2RmOTdiOTkiLCJleHAiOjE2MjQwMTQ1MjN9.R5PkreGZLnCis-3-ses9EXQc9SBotMfVzdb1QRvryQv92HdEtihp0PWueaHoT-hxvUKBQTdTMmzb-yU_8n794Q
 
 ###
 POST http://localhost:8012/actuator/busrefresh

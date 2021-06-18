@@ -3,7 +3,9 @@ package com.kmakrutin.photo.app.api.users.service;
 import com.kmakrutin.photo.app.api.users.dto.UserDto;
 import com.kmakrutin.photo.app.api.users.entity.UserEntity;
 import com.kmakrutin.photo.app.api.users.repository.UserRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -64,13 +67,16 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-
-
         final UserDto userDto = userRepository.findFirstByUserId(userId)
                 .map(userEntity -> modelMapper.map(userEntity, UserDto.class))
                 .orElseThrow(() -> new RuntimeException("User not found by id " + userId));
 
-        userDto.setAlbums(albumService.getAlbums(userId));
+        try {
+            userDto.setAlbums(albumService.getAlbums(userId));
+        } catch (FeignException e) {
+            log.error("Failed to load albums for user is {}", userId, e);
+            userDto.setAlbums(Collections.emptyList());
+        }
 
 //        String albumsUrl = environment.getProperty("albums.url", "");
 //
