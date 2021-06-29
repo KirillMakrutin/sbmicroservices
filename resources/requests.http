@@ -38,6 +38,10 @@ Authorization: Bearer
 GET http://localhost:8082/users-ws/users/088e5a32-1826-42af-a28d-22947df97b99
 Authorization: Bearer
 
+### home
+GET http://localhost:8082/users-ws/users/9e8e40ba-0c8c-4cc5-b937-e5fffea21cdc
+Authorization: Bearer
+
 ###
 POST http://localhost:8012/actuator/busrefresh
 
@@ -60,4 +64,5 @@ Content-Type: text/plain
 POST http://localhost:8012/decrypt
 Content-Type: text/plain
 
-6af68290f9b59d8ea6451de1b29cd2ae5c075d71774eda03c294c401a63cf114
+###
+GET http://localhost:9200/_cat/indices

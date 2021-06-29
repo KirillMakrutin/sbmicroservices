@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         try {
             log.info("Before calling albums microservice");
             userDto.setAlbums(albumService.getAlbums(userId));
-            log.info("After calling albums microservice");
+            log.info("After calling albums microservice: {}", userDto);
         } catch (FeignException e) {
             log.error("Failed to load albums for user is {}", userId, e);
             userDto.setAlbums(Collections.emptyList());
